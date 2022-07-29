@@ -11,6 +11,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.OutlinedButton
+import androidx.compose.ui.modifier.modifierLocalOf
+import androidx.compose.material.Button
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import kotlin.math.exp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,23 +33,39 @@ class MainActivity : ComponentActivity() {
     }
 
 @Composable
-private fun MyApp() {
-    Surface(color = MaterialTheme.colors.background) {
-        Greeting("Android")
+private fun MyApp(names: List<String> = listOf("World", "Kotlin")) {
+    Column(modifier = Modifier.padding(vertical = 4.dp)) {
+        for (name in names) {
+            Greeting(name = name)}
     }
 }
 
 @Composable
-private fun Greeting(name: String){
-    Surface(color = MaterialTheme.colors.primary){
-    Text(text = "Hello $name!",
-    modifier = Modifier.padding(24.dp))
+fun Greeting(name: String){
+    val expanded = remember { mutableStateOf(false) }
+    val extraPadding = if (expanded.value) 48.dp else 0.dp
+    Surface(color = MaterialTheme.colors.primary,
+            modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
+    ) {
+        Row(modifier= Modifier.padding(24.dp)) {
+            Column(modifier = Modifier
+                .weight(1f)
+                .padding( bottom = extraPadding)) {
+                Text(text = "Hello,")
+                Text(text = name)
+            }
+            OutlinedButton(
+                onClick = { expanded.value = !expanded.value }
+            ) {
+                Text(if (expanded.value) "Show less" else "Show more")
+            }
+        }
     }
 }
 
-@Preview
+@Preview(widthDp = 320)
 @Composable
-private fun DefaultPreview() {
+fun DefaultPreview() {
     MaterialTheme {
         MyApp()
     }
